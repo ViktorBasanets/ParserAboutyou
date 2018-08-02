@@ -1,15 +1,17 @@
 package com.html.parsers.parser.Model;
 
+import java.util.List;
+
 public class Product {
 
-    String name;
-    String brand;
-    String color;
-    String price;
-    String initialPrice;
-    String description;
-    String articleId;
-    String shippingCosts;
+    private String name;
+    private String brand;
+    private List<String> colors;
+    private String price;
+    private String initialPrice;
+    private String description;
+    private String articleId;
+    private String shippingCosts;
 
     public String getName() {
         return name;
@@ -27,12 +29,12 @@ public class Product {
         this.brand = brand;
     }
 
-    public String getColor() {
-        return color;
+    public List<String> getColors() {
+        return colors;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColors(List<String> colors) {
+        this.colors = colors;
     }
 
     public String getPrice() {
