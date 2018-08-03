@@ -1,15 +1,22 @@
 package com.html.parsers.parser;
 
+import com.html.parsers.parser.Model.Product;
+import com.html.parsers.parser.Parser.ParserAboutYou;
+import com.html.parsers.parser.Parser.ParserAboutYouImpl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
+
+    private static int counterOfRequests;
 
     public static void main(String[] args)
             throws IOException {
@@ -17,37 +24,75 @@ public class Main {
         long countingTime = System.currentTimeMillis();
         long memorySize = deltaOfMemory();
 
-        String keyword = args[0];
-        String url = "https://www.aboutyou.de/suche?term=";
-        String cssQueryLinks = "div[class=row] > div[class=styles__container--1bqmB]";
-        String cssQueryButtonNext = "li.styles__buttonNext--3YXvj > a[href]";
-        List<String> links = new ArrayList<>();
+        int theNumberOfTicks = 1000;
+        int byteInMb = 1048576;
 
-        Document document = Jsoup.connect(url + keyword).get();
+        Random random = new Random();
+        String url = "https://www.aboutyou.de/suche?term=" + args[0];
 
-        document.select(cssQueryLinks).forEach(element ->
-            element.select("div[data-tracking-qa] > a[href]")
-                    .eachAttr("abs:href")
-                    .forEach(link -> links.add(link))
-        );
+        ParserAboutYou parser = new ParserAboutYouImpl();
+        List<Product> products =  new ArrayList<>();
 
-        links.forEach(System.out::println);
+        while (true) {
 
-        url = document.select(cssQueryButtonNext).attr("abs:href");
+            parser.setDocument(url);
+            increaseCnt();
+            parser.getLinks().forEach(link -> {
+                delay(random);
+                Product product = new Product();
+                product.setBrand(parser.getBrand());
+                parser.setDocument(link);
+                increaseCnt();
+                product.setName(parser.getName());
+                List<String> colors = new ArrayList<>();
+                parser.getColorsLinks().forEach(linkToColor -> {
+                    delay(random);
+                    colors.add(linkToColor);
+                    increaseCnt();
+                });
+                product.setColors(colors);
+                product.setPrice(parser.getPrice());
+                product.setInitialPrice(parser.getInitialPrice());
+                product.setDescription(parser.getDescription());
+                product.setArticleId(parser.getArticleId());
+                product.setShippingCosts(parser.getShippingCosts());
+                products.add(product);
+            });
 
-        System.out.println(links.size());
+            String nextPage = parser.getNextPage();
+            if (nextPage.isEmpty()) {
+                break;
+            }
+            url = nextPage;
+        }
+
 
         long deltaTime = System.currentTimeMillis() - countingTime;
         long deltaMemory = deltaOfMemory() - memorySize;
 
-        int theNumberOfTicks = 1000;
-        int byteInMb = 1048576;
-
+        System.out.println("Amount of triggered HTTP request: " + getCounterOfRequests());
         System.out.println("Run-time: " + deltaTime / theNumberOfTicks + " sec");
         System.out.println("Memory footprint: " + deltaMemory / byteInMb + " MB");
+        System.out.println("Amount of extracted products: " + products.size());
     }
 
     private static long deltaOfMemory() {
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+    }
+
+    private static void delay(Random random) {
+        try {
+            Thread.sleep(random.nextInt(1550) + 1750);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void increaseCnt() {
+        counterOfRequests++;
+    }
+
+    private static int getCounterOfRequests() {
+        return counterOfRequests;
     }
 }
