@@ -22,7 +22,6 @@ public class ParserAboutYouImpl implements Parser {
     public String getBrand() {
         Elements elements = document.select("div[class=styles__brandName--2XS22]");
         String str =elements.first().text();
-        System.out.println(str);
         return str;
     }
 

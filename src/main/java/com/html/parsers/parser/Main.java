@@ -1,5 +1,7 @@
 package com.html.parsers.parser;
 
+import com.html.parsers.parser.Dao.Scribe;
+import com.html.parsers.parser.Dao.XmlScribeImpl;
 import com.html.parsers.parser.Model.Product;
 import com.html.parsers.parser.Parser.Parser;
 import com.html.parsers.parser.Parser.ParserAboutYouImpl;
@@ -61,6 +63,9 @@ public class Main {
             parser.setDocument(nextPage);
             increaseCnt();
         }
+
+        Scribe scribe = new XmlScribeImpl();
+        scribe.write("descriptionOfGoods.xml", scribe.toXml(products));
 
         long deltaTime = System.currentTimeMillis() - countingTime;
         long deltaMemory = deltaOfMemory() - memorySize;
