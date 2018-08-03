@@ -76,4 +76,18 @@ public class Product {
     public void setShippingCosts(String shippingCosts) {
         this.shippingCosts = shippingCosts;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", colors=" + colors +
+                ", price='" + price + '\'' +
+                ", initialPrice='" + initialPrice + '\'' +
+                ", description='" + description + '\'' +
+                ", articleId='" + articleId + '\'' +
+                ", shippingCosts='" + shippingCosts + '\'' +
+                '}';
+    }
 }

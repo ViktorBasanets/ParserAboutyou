@@ -1,14 +1,9 @@
 package com.html.parsers.parser;
 
 import com.html.parsers.parser.Model.Product;
-import com.html.parsers.parser.Parser.ParserAboutYou;
+import com.html.parsers.parser.Parser.Parser;
 import com.html.parsers.parser.Parser.ParserAboutYouImpl;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +25,20 @@ public class Main {
         Random random = new Random();
         String url = "https://www.aboutyou.de/suche?term=" + args[0];
 
-        ParserAboutYou parser = new ParserAboutYouImpl();
+        Parser parser = new ParserAboutYouImpl();
         List<Product> products =  new ArrayList<>();
-
+        parser.setDocument(url);
+        String brand = parser.getBrand();
         while (true) {
 
-            parser.setDocument(url);
             increaseCnt();
             parser.getLinks().forEach(link -> {
                 delay(random);
                 Product product = new Product();
-                product.setBrand(parser.getBrand());
                 parser.setDocument(link);
                 increaseCnt();
                 product.setName(parser.getName());
+                product.setBrand(brand);
                 List<String> colors = new ArrayList<>();
                 parser.getColorsLinks().forEach(linkToColor -> {
                     delay(random);
@@ -63,9 +58,9 @@ public class Main {
             if (nextPage.isEmpty()) {
                 break;
             }
-            url = nextPage;
+            parser.setDocument(nextPage);
+            increaseCnt();
         }
-
 
         long deltaTime = System.currentTimeMillis() - countingTime;
         long deltaMemory = deltaOfMemory() - memorySize;

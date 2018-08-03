@@ -2,12 +2,13 @@ package com.html.parsers.parser.Parser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParserAboutYouImpl implements ParserAboutYou {
+public class ParserAboutYouImpl implements Parser {
 
     private Document document;
 
@@ -19,7 +20,10 @@ public class ParserAboutYouImpl implements ParserAboutYou {
 
     @Override
     public String getBrand() {
-        return document.select("div[class=styles__brandName--2XS22]").first().html();
+        Elements elements = document.select("div[class=styles__brandName--2XS22]");
+        String str =elements.first().text();
+        System.out.println(str);
+        return str;
     }
 
     @Override

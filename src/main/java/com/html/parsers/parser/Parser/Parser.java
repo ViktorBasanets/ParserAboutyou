@@ -1,10 +1,8 @@
 package com.html.parsers.parser.Parser;
 
-import com.html.parsers.parser.Model.Product;
-
 import java.util.List;
 
-public interface ParserAboutYou {
+public interface Parser {
 
     String getName();
 
