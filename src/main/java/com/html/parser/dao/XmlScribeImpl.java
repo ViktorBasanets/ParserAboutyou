@@ -1,6 +1,6 @@
-package com.html.parsers.parser.Dao;
+package com.html.parser.dao;
 
-import com.html.parsers.parser.Model.Product;
+import com.html.parser.model.Product;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,13 +36,14 @@ public class XmlScribeImpl implements Scribe{
     }
 
     @Override
-    public void write(String fileName, StringBuilder builder)
-            throws IOException {
+    public void write(String fileName, StringBuilder builder) {
 
         File file = new File(fileName);
-        BufferedWriter writer = new BufferedWriter(
-                new FileWriter(file)
-        );
-        writer.write(builder.toString());
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(builder.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

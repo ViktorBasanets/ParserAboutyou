@@ -1,4 +1,4 @@
-package com.html.parsers.parser.Model;
+package com.html.parser.model;
 
 import java.util.List;
 

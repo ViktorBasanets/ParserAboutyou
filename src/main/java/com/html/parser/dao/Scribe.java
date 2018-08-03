@@ -1,6 +1,6 @@
-package com.html.parsers.parser.Dao;
+package com.html.parser.dao;
 
-import com.html.parsers.parser.Model.Product;
+import com.html.parser.model.Product;
 
 import java.io.IOException;
 import java.util.List;
