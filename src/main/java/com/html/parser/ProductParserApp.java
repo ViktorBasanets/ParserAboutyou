@@ -12,9 +12,6 @@ public class ProductParserApp {
         long countingTime = System.currentTimeMillis();
         long memorySize = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-        int theNumberOfTicks = 1000;
-        int byteInMb = 1048576;
-
         String url = "https://www.aboutyou.de/suche?term=" + args[0];
         Document document = null;
 
@@ -29,8 +26,8 @@ public class ProductParserApp {
         long deltaTime = System.currentTimeMillis() - countingTime;
         long deltaMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() - memorySize;
 
-        System.out.println("Run-time: " + deltaTime / theNumberOfTicks + " sec");
-        System.out.println("Memory footprint: " + deltaMemory / byteInMb + " MB");
+        System.out.println("Run-time: " + deltaTime / Const.TICS + " sec");
+        System.out.println("Memory footprint: " + deltaMemory / Const.BYTE_IN_MB + " MB");
 
     }
 }

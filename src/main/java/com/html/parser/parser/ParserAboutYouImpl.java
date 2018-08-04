@@ -1,5 +1,6 @@
 package com.html.parser.parser;
 
+import com.html.parser.Const;
 import com.html.parser.model.Product;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -146,7 +147,7 @@ public class ParserAboutYouImpl implements Parser {
 
     private void delay(Random random) {
         try {
-            Thread.sleep(random.nextInt(1550) + 1750);
+            Thread.sleep(random.nextInt(Const.BOTTOM_EDGE) + Const.TOP_FACE);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
