@@ -6,19 +6,18 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParserAboutYouImpl implements Parser {
+
+    private ResourceBundle bundle = ResourceBundle.getBundle("expressions");
 
     @Override
     public List<Product> parse(Document document, String url) {
 
         Random random = new Random();
-        List<Product> products =  new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         AtomicInteger counter = new AtomicInteger(0);
 
         try {
@@ -54,6 +53,7 @@ public class ParserAboutYouImpl implements Parser {
                     product.setArticleId(getArticleId(inst));
                     product.setShippingCosts(getShippingCosts());
                     products.add(product);
+                    System.out.println(products.size() + ") " + product.getName() + " ...");
                 });
 
                 String nextPage = getNextPage(document);
@@ -75,40 +75,39 @@ public class ParserAboutYouImpl implements Parser {
 
     private String getName(Document document) {
 
-        return document.select("span[class=styles__title--3Jos_]").html();
+        return document.select(bundle.getString("getName")).html();
     }
 
     private String getBrand(Document document) {
-        Elements elements = document.select("div[class=styles__brandName--2XS22]");
-        String str =elements.first().text();
+        Elements elements = document.select(bundle.getString("getBrand"));
+        String str = elements.first().text();
         return str;
     }
 
     private List<String> getColorsLinks(Document document) {
-        return document.select("div[class=styles__thumbnailWrapper--3uDnG] > a[href]")
-                .eachAttr("abs:href");
+        return document.select(bundle.getString("getColorsLinks"))
+                .eachAttr(bundle.getString("getHref"));
     }
 
     private String getPrice(Document document) {
-        String price = document.select("div[class=productPrices priceStyles__normal--3aCVn]").html();
-        price = price.replaceAll("[a-z]*(<.*?--.*?-->)*\n*", "");
+        String price = document.select(bundle.getString("getPrice")).html();
+        price = price.replaceAll(bundle.getString("replaceAll"), "");
         return price;
     }
 
     private String getInitialPrice(Document document) {
-        String price = document.select("div[class=priceStyles__strike--PSBGK]").html();
+        String price = document.select(bundle.getString("getInitialPrice")).html();
         if (price.isEmpty()) {
             return Optional.empty().toString();
         }
-        price = price.replaceAll("[a-z]*(<.*?--.*?-->)*", "");
+        price = price.replaceAll(bundle.getString("replaceAll"), "");
         return price;
     }
 
     private String getDescription(Document document) {
         List<String> descriptions = new ArrayList<>();
-        document.select("div[class=styles__accordionContainer--1dPP0]")
-                .forEach(ul ->
-                        descriptions.add(ul.select("ul[class] > li").html()));
+        document.select(bundle.getString("getDescription.div")).forEach(ul ->
+                descriptions.add(ul.select(bundle.getString("getDescription.ul")).html()));
         String result = "";
         for (String description : descriptions) {
             result += description + " ";
@@ -118,8 +117,8 @@ public class ParserAboutYouImpl implements Parser {
 
     private String getArticleId(Document document) {
 
-        String article = document.select("li[class=styles__articleNumber--1UszN]").html();
-        article = article.replaceAll("Artikel-Nr: ", "");
+        String article = document.select(bundle.getString("getArticleId")).html();
+        article = article.replaceAll(bundle.getString("replaceArt"), "");
         return article;
     }
 
@@ -128,20 +127,19 @@ public class ParserAboutYouImpl implements Parser {
     }
 
     private String getNextPage(Document document) {
-        return document.select("li[class=styles__buttonNext--3YXvj] > a[href]")
-                .attr("abs:href");
+        return document.select(bundle.getString("getNextPage"))
+                .attr(bundle.getString("getHref"));
     }
 
     private List<String> getLinks(Document document) {
 
-        if(document == null) {
+        if (document == null) {
             return new ArrayList<>();
         }
         List<String> links = new ArrayList<>();
-        String cssQuery = "div[class=row] > div[class=styles__container--1bqmB]";
-        document.select(cssQuery).forEach(element ->
-                element.select("div[data-tracking-qa] > a[href]")
-                        .eachAttr("abs:href")
+        document.select(bundle.getString("getLinks.div1")).forEach(element ->
+                element.select(bundle.getString("getLinks.div2"))
+                        .eachAttr(bundle.getString("getHref"))
                         .forEach(link -> links.add(link)));
         return links;
     }
